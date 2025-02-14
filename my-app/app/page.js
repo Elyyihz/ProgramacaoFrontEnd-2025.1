@@ -1,4 +1,9 @@
 export default function Home() {
-  return <h1>Olá Turma</h1>;
- <p> Nossa Primeira aula de react! </p>;
+  const aula = 2;
+  return (
+    <>
+    <h1> Oi Professor! </h1>
+    <p> Essa é a nossa {aula}° aula de react!</p>
+    </>
+  ) 
 }
