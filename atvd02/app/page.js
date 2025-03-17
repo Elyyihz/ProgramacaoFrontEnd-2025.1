@@ -24,17 +24,14 @@ export default function Home() {
     }
   };
 
-  const determinarVencedor = (novoValor, jogador) => {
-    const dado1 = jogador === 1 ? novoValor : valorDado1;
-    const dado2 = jogador === 2 ? novoValor : valorDado2;
-
-    if (dado1 !== null && dado2 !== null) {
+  const determinarVencedor = () => {
+    if (valorDado1 !== null && valorDado2 !== null) {
       let vencedor = "";
 
-      if (dado1 > dado2) {
+      if (valorDado1 > valorDado2) {
         vencedor = "Jogador 1 venceu!";
         setPlacar((prev) => ({ ...prev, jogador1: prev.jogador1 + 1 }));
-      } else if (dado2 > dado1) {
+      } else if (valorDado2 > valorDado1) {
         vencedor = "Jogador 2 venceu!";
         setPlacar((prev) => ({ ...prev, jogador2: prev.jogador2 + 1 }));
       } else {
@@ -42,15 +39,23 @@ export default function Home() {
       }
 
       setVencedorRodada(vencedor);
+
       if (rodada < 5) {
-        setRodada(rodada + 1);
-        setValorDado1(null);
-        setValorDado2(null);
+        setTimeout(() => {
+          setRodada(rodada + 1);
+          setValorDado1(null);
+          setValorDado2(null);
+          setVencedorRodada("");
+        }, 2000); 
       } else {
         setJogoFinalizado(true);
       }
     }
   };
+
+  if (valorDado1 !== null && valorDado2 !== null) {
+    determinarVencedor();
+  }
 
   const resetarJogo = () => {
     setRodada(1);
@@ -95,7 +100,7 @@ export default function Home() {
       <h2 style={styles.placar}>
         Placar: {placar.jogador1} x {placar.jogador2}
       </h2>
-      {vencedorRodada && <h3>{vencedorRodada}</h3>}
+      {vencedorRodada && <h3 style={styles.resultado}>{vencedorRodada}</h3>}
 
       {jogoFinalizado && (
         <div>
@@ -161,5 +166,12 @@ const styles = {
     marginTop: "20px",
     fontSize: "1.5rem",
     fontWeight: "bold",
+    color: "#000", 
+  },
+  resultado: {
+    marginTop: "10px",
+    fontSize: "1.2rem",
+    fontWeight: "bold",
+    color: "#333",
   },
 };
