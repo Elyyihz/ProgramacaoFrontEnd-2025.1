@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 export default function Home() {
   const [valorDado1, setValorDado1] = useState(null);
@@ -18,44 +18,40 @@ export default function Home() {
     } else {
       setValorDado2(novoValor);
     }
+  };
 
-    if (valorDado1 !== null && valorDado2 !== null) {
-      determinarVencedor(novoValor, jogador);
+  const determinarVencedor = (valor1, valor2) => {
+    let vencedor = "";
+
+    if (valor1 > valor2) {
+      vencedor = "Jogador 1 venceu!";
+      setPlacar((prev) => ({ ...prev, jogador1: prev.jogador1 + 1 }));
+    } else if (valor2 > valor1) {
+      vencedor = "Jogador 2 venceu!";
+      setPlacar((prev) => ({ ...prev, jogador2: prev.jogador2 + 1 }));
+    } else {
+      vencedor = "Empate!";
+    }
+
+    setVencedorRodada(vencedor);
+
+    if (rodada < 5) {
+      setTimeout(() => {
+        setRodada((prevRodada) => prevRodada + 1);
+        setValorDado1(null);
+        setValorDado2(null);
+        setVencedorRodada("");
+      }, 2000);
+    } else {
+      setJogoFinalizado(true);
     }
   };
 
-  const determinarVencedor = () => {
+  useEffect(() => {
     if (valorDado1 !== null && valorDado2 !== null) {
-      let vencedor = "";
-
-      if (valorDado1 > valorDado2) {
-        vencedor = "Jogador 1 venceu!";
-        setPlacar((prev) => ({ ...prev, jogador1: prev.jogador1 + 1 }));
-      } else if (valorDado2 > valorDado1) {
-        vencedor = "Jogador 2 venceu!";
-        setPlacar((prev) => ({ ...prev, jogador2: prev.jogador2 + 1 }));
-      } else {
-        vencedor = "Empate!";
-      }
-
-      setVencedorRodada(vencedor);
-
-      if (rodada < 5) {
-        setTimeout(() => {
-          setRodada(rodada + 1);
-          setValorDado1(null);
-          setValorDado2(null);
-          setVencedorRodada("");
-        }, 2000); 
-      } else {
-        setJogoFinalizado(true);
-      }
+      determinarVencedor(valorDado1, valorDado2);
     }
-  };
-
-  if (valorDado1 !== null && valorDado2 !== null) {
-    determinarVencedor();
-  }
+  }, [valorDado1, valorDado2]);
 
   const resetarJogo = () => {
     setRodada(1);
@@ -158,7 +154,7 @@ const styles = {
     borderRadius: "5px",
     cursor: "pointer",
     transition: "background-color 0.3s ease",
-    disabled: {
+    "&:disabled": {
       backgroundColor: "#ccc",
     },
   },
@@ -166,7 +162,7 @@ const styles = {
     marginTop: "20px",
     fontSize: "1.5rem",
     fontWeight: "bold",
-    color: "#000", 
+    color: "#000",
   },
   resultado: {
     marginTop: "10px",
